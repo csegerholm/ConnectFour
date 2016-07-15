@@ -1,0 +1,11 @@
+Things to fix:
+	-Human player:
+		should listen to the mouse in order to determine if move is made, if they hit undo or if they hit quit
+		should also return w, u, q, n, or t
+	-Computer player:
+		should just have ability to make a move or undo their previous move 
+			make move should return w if they win, n for keep going, t for tie
+	-Game Screen:
+		- undo button
+		-quit button
+		-winning/tie pop up -> hit continue and you go back to start screen
