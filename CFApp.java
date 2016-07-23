@@ -16,7 +16,7 @@ public class CFApp {
 	JFrame frame;
 	
 	/**
-	 * Holds the panel for selecting players and level
+	 * Holds the panel for selecting player amount
 	 */
 	StartMenu startMenu;
 	
@@ -27,7 +27,7 @@ public class CFApp {
 		startMenu = new StartMenu(this);
 		frame.setContentPane(startMenu);
 		frame.pack();
-		frame.setSize(new Dimension(800,700));
+		frame.setSize(new Dimension(ScreenConfiguration.width,ScreenConfiguration.height));
 	}
 	
 	/**

@@ -9,14 +9,20 @@ public interface CFPlayer{
 	
 	/**
 	 * Asks and plays the next move
-	 * @return w = win, u = undo, q = quit, n = nothing = good to go
+	 * @param move - coordinates of the move user wishes to make (not used for AI)
+	 * @return w = win, n = nothing = good to go, t = tie
 	 */
-	public char makeMove();
+	public char makeMove(Coordinate move);
 	
 	/**
 	 * Removes move from board as well as array of prev moves
 	 */
 	public void undoMove();
+
+	/**
+	 * Restarts player's boards and list of last moves
+	 */
+	public void playAgain();
 	
 	
 }

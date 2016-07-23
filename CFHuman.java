@@ -23,77 +23,60 @@ public class CFHuman implements CFPlayer{
 
 	
 	//Helper methods
-	public void checkValidRow(Coordinate ans){
+	/**
+	 * Returns true if valid row selected
+	 * @param ans
+	 * @return
+	 */
+	public boolean checkValidRow(Coordinate ans){
 		char[][] board =gameScreen.board;
-		while(ans.col<0 || ans.col>6){
-			ans.col=GIO.readInt("Error: Column out of bounds.\n Please Enter a valid column number:");
+		//col is not valid col number
+		if(ans.col<0 || ans.col>6){
+			return false;
 		}
-		while(true){
-			if(board[5][ans.col]=='O'){
-				for(int i=0;i<6;i++){
-					if(board[i][ans.col]=='O'){
-						ans.row=i;
-						break;
-					}
-				}
-				break;
-			}
-			else{
-				ans.col=GIO.readInt("Error: Column fill.\n Please Enter a valid column number:");
-				while(ans.col<0 || ans.col>6){
-					ans.col=GIO.readInt("Error: Column out of bounds.\n Please Enter a valid column number:");
+		//col is full
+		if(board[5][ans.col]=='O'){
+			for(int i=0;i<6;i++){
+				if(board[i][ans.col]=='O'){
+					ans.row=i;
+					return true;
 				}
 			}
 		}
+		return false;
 	}
-	//
 
 	public char getColor() {
 		return color;
 	}
 	
-	//Non GUI 
-	public char makeMove() {
+	public char makeMove(Coordinate ans) {
+		//tie
 		if(movesCnt>=3*7){
-			CFGame.printBoard();
-			String again=GIO.readString("Out of moves. It's a Tie.\nPlay again?");
-			char a = again.charAt(0);
-			if(a=='y'|| a=='Y'){
-				restart();
-				return -1;//restart
-			}
-			return -2;
+			return 't';
 		}
-		Coordinate ans = new Coordinate(-1,-1);
-		ans.col=GIO.readInt(name+", please enter the column number you would like to drop your chip in.");
-		checkValidRow(ans);
+		boolean colNotValid = true;
+		while(colNotValid){
+			colNotValid = !checkValidRow(ans);
+		}
 		
 		prevMoves[movesCnt]=ans;
 		movesCnt++;
-		board[ans.row][ans.col]=color;
+		gameScreen.board[ans.row][ans.col]=color;
 		if(didWin()){
-			CFGame.printBoard();
-			String again=GIO.readString(name+", YOU WON!\n Play again? y/n");
-			char a = again.charAt(0);
-			if(a=='y'|| a=='Y'){
-				restart();
-				return -1;
-			}
-			return -2;
+			return 'w';
 		}
-		return 0;
+		return 'n';
 	}
 
 	//only gets this if undoing move
 	public void undoMove() {
-		Coordinate last = prevMoves[movesCnt-1];
-		board[last.row][last.col]='O';
+		if(movesCnt==0){
+			return;
+		}
 		movesCnt--;
-	}
-
-	public void restart() {
-		this.prevMoves = new Coordinate[3*7];
-		this.movesCnt=0;
+		Coordinate last = prevMoves[movesCnt];
+		gameScreen.board[last.row][last.col]='O';
 	}
 	
 	public boolean didWin() {
@@ -102,7 +85,7 @@ public class CFHuman implements CFPlayer{
 		int ud=0;
 		//check left
 		for(int i=last.col-1; i>=0; i-- ){
-			if(board[last.row][i]==color){
+			if(gameScreen.board[last.row][i]==color){
 				lr++;
 			}
 			else{
@@ -111,7 +94,7 @@ public class CFHuman implements CFPlayer{
 		}
 		//check right
 		for(int i=last.col+1; i< 7; i++ ){
-			if(board[last.row][i]==color){
+			if(gameScreen.board[last.row][i]==color){
 				lr++;
 			}
 			else{
@@ -123,7 +106,7 @@ public class CFHuman implements CFPlayer{
 		}
 		//check up
 		for(int i=last.row+1; i< 6; i++ ){
-			if(board[i][last.col]==color){
+			if(gameScreen.board[i][last.col]==color){
 				ud++;
 			}
 			else{
@@ -132,7 +115,7 @@ public class CFHuman implements CFPlayer{
 		}
 		//check down
 		for(int i=last.row-1; i>=0; i-- ){
-			if(board[i][last.col]==color){
+			if(gameScreen.board[i][last.col]==color){
 				ud++;
 			}
 			else{
@@ -146,7 +129,7 @@ public class CFHuman implements CFPlayer{
 		int ul=0;
 		//check up right 
 		for(int i=1;last.row+i<6 && last.col+i<7 ; i++ ){
-			if(board[last.row+i][last.col+i]==color){
+			if(gameScreen.board[last.row+i][last.col+i]==color){
 				ur++;
 			}
 			else{
@@ -155,7 +138,7 @@ public class CFHuman implements CFPlayer{
 		}
 		//check down left
 		for(int i=1;last.row-i>=0 && last.col-i>=0 ; i++ ){
-			if(board[last.row-i][last.col-i]==color){
+			if(gameScreen.board[last.row-i][last.col-i]==color){
 				ur++;
 			}
 			else{
@@ -167,7 +150,7 @@ public class CFHuman implements CFPlayer{
 		}
 		//check up left
 		for(int i=1;last.row+i<6 && last.col-i>=0 ; i++ ){
-			if(board[last.row+i][last.col-i]==color){
+			if(gameScreen.board[last.row+i][last.col-i]==color){
 				ul++;
 			}
 			else{
@@ -176,7 +159,7 @@ public class CFHuman implements CFPlayer{
 		}
 		//check down right
 		for(int i=1;last.row-i>=0 && last.col+i<7 ; i++ ){
-			if(board[last.row-i][last.col+i]==color){
+			if(gameScreen.board[last.row-i][last.col+i]==color){
 				ul++;
 			}
 			else{
@@ -188,6 +171,22 @@ public class CFHuman implements CFPlayer{
 		}
 		
 		return false;
+	}
+
+
+
+	/**
+	 * Erases list of previous moves and clears gameScreen's board
+	 */
+	public void playAgain() {
+		this.movesCnt=0;
+		
+		for(int i=0; i<gameScreen.board.length;i++){
+			for(int j=0; j<gameScreen.board[i].length; j++){
+				gameScreen.board[i][j] = 'O';
+			}
+		}
+		
 	}
 	
 }

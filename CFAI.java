@@ -1,6 +1,5 @@
 package ImprovedVersion;
 
-//NOT DONE
 /**
  * Player object for computer player. 
  * @author csegerholm
@@ -215,37 +214,34 @@ public class CFAI implements CFPlayer{
 		return -1;
 	}
 	
-	//
 	public char getColor() {
 		return color;
 	}
 	
 	public void undoMove() {
-		Coordinate last = prevMoves[movesCnt-1];
-		board[last.row][last.col]='O';
+		if(movesCnt==0){
+			return;
+		}
+		
 		movesCnt--;
+		Coordinate last = prevMoves[movesCnt];
+		board[last.row][last.col]='O';
 	}
 
-	public void restart() {
-		this.prevMoves = new Coordinate[3*7];
-		this.movesCnt=0;
-	}
 	
 	public boolean didWin() {
 		Coordinate last = prevMoves[movesCnt-1];
 		return winOneMove(last, color);
 	}
 	
-	public char makeMove() {
+	/**
+	 * Plays the next move
+	 * @return n = nothing = good to go, t=tie, w=win
+	 */
+	public char makeMove(Coordinate move) {
+		//tie
 		if(movesCnt>=3*7){
-			//CFGame.printBoard();
-			String again= GIO.readString("Out of moves. It's a Tie.\nPlay again?");
-			char a = again.charAt(0);
-			if(a=='y'|| a=='Y'){
-				restart();
-				return -1;//restart
-			}
-			return -2;
+			return 't';
 		}
 		checkCol();
 		Coordinate ans = new Coordinate(-1,-1);
@@ -304,16 +300,11 @@ public class CFAI implements CFPlayer{
 		board[ans.row][ans.col]=color;
 		
 		if(didWin()){
-			CFGame.printBoard();
-			String again=GIO.readString(name+" WON!\n Play again? y/n");
-			char a = again.charAt(0);
-			if(a=='y'|| a=='Y'){
-				restart();
-				return -1;
-			}
-			return -2;
+			//win
+			return 'w';
 		}
-		return 0;
+		//nothing- continue playing
+		return 'n';
 	}
 
 	private int canWin(char color){ // returns col number to win or block a win -1 if cant
@@ -425,6 +416,20 @@ public class CFAI implements CFPlayer{
 		}
 		
 		return false;
+	}
+
+	/**
+	 * Wipes the board and prevMoves clean
+	 */
+	public void playAgain() {
+		this.movesCnt=0;
+		
+		for(int i=0; i<board.length;i++){
+			for(int j=0; j<board[i].length; j++){
+				board[i][j] = 'O';
+			}
+		}
+		
 	}
 	
 }

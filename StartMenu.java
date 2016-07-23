@@ -1,7 +1,6 @@
 package ImprovedVersion;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
@@ -33,7 +32,7 @@ public class StartMenu extends JPanel{
 	 */
 	public StartMenu(CFApp cfapp){
 		home = cfapp;
-		gameScreen = new GameScreen();
+		gameScreen = new GameScreen(this);
 		//Set color to blue
 		setBackground(Color.BLUE);
 		//Array layout where you pick coordinates of each component
@@ -55,19 +54,21 @@ public class StartMenu extends JPanel{
 	 * Sets up the text on the start screen
 	 */
 	private void makeHeaderText(){
+		int w =ScreenConfiguration.width;
+		int h = ScreenConfiguration.height;
 		
 		JTextField cfText = new JTextField("Connect Four");
 		cfText.setEditable(false);
-		cfText.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		//cfText.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		cfText.setHorizontalAlignment(SwingConstants.CENTER);
-		cfText.setBounds(200, 10, 200, 30);
+		cfText.setBounds(w/8, h/16, w*3/4, h/4);
 		add(cfText);
 		
-		JTextField selectPlayerText = new JTextField("Please Select Amount of Players:");
+		JTextField selectPlayerText = new JTextField("Select Amount of Players:");
 		selectPlayerText.setEditable(false);
-		selectPlayerText.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		//selectPlayerText.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		selectPlayerText.setHorizontalAlignment(SwingConstants.CENTER);
-		selectPlayerText.setBounds(500, 50, 200, 30);
+		selectPlayerText.setBounds(w/4, h*3/8, w/2, h*3/16);
 		add(selectPlayerText);
 		
 		
@@ -77,8 +78,11 @@ public class StartMenu extends JPanel{
 	 * Draws buttons for amount of players
 	 */
 	private void makeOptions(){
+		int w =ScreenConfiguration.width;
+		int h = ScreenConfiguration.height;
+		
 		JButton one = new JButton("One Player");
-		one.setBounds(500, 150, 200, 100);
+		one.setBounds(w*5/16, h*10/16, w*3/8, h/16);
 		one.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//switch to level screen
@@ -88,7 +92,7 @@ public class StartMenu extends JPanel{
 		add(one);
 		
 		JButton two = new JButton("Two Player");
-		two.setBounds(500, 350, 200, 100);
+		two.setBounds(w*5/16, h*12/16, w*3/8, h/16);
 		two.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//switch to level screen
@@ -98,10 +102,20 @@ public class StartMenu extends JPanel{
 		add(two);
 	}
 	
+	/**
+	 * Switches to game screen to start the game
+	 * @param players
+	 */
 	private void startGame(int players){
 		//set frame
 		home.frame.setContentPane(gameScreen);
 		gameScreen.startGame(players);
+	}
+	
+	/**
+	 * Called to redraw the screen when a game ends.
+	 */
+	public void restart(){
 		//Return here when they quit or win
 		home.frame.setContentPane(this);
 		this.updateScreen();
