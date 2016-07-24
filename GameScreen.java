@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -42,40 +44,48 @@ public class GameScreen extends JPanel{
 	int playerAmount;
 	
 	/**
-	 * Listens to player moves and calls make move
+	 * Start of each column in regards to width.
 	 */
-	private Listener mouseListener;
+	int[] columnStart;
+	
+	/**
+	 * Pixel width of each circle.
+	 */
+	int circleWidth;
+	
+	MouseAdapter listener;
 	
 	/**
 	 * Constructor - creates the game board-> number of players is to be entered in startGame function.
 	 */
 	public GameScreen(StartMenu sm){
 		startMenu = sm;
-		board = new char[8][7];
+		board = new char[6][7];
 		players = new CFPlayer[2];
 		//Set color to purple
 		setBackground(Color.magenta);
 		//Array layout where you pick coordinates of each component
 		setLayout(null);
+		this.columnStart = new int[7];
 	}
 	
 	/**
 	 * Starts the game and draws the board.
 	 * @param players - number of human players
 	 */
-	public void startGame(int players){
+	public void startGame(int playerNum){
 		currPlayerIndex=0;
-		playerAmount = players;
+		playerAmount = playerNum;
 		for(int i=0;i<board.length;i++){
 			for(int j=0; j<board[i].length;j++){
 				board[i][j] = 'O';
 			}
 		}
-		if(players ==1){
+		if(playerNum ==1){
 			this.players[0] = new CFHuman('B', this);
 			this.players[1] = new CFAI('R', board);
 		}
-		else if(players ==2){
+		else if(playerNum ==2){
 			this.players[0] = new CFHuman('B', this);
 			this.players[1] = new CFHuman('R', this);
 		}
@@ -83,8 +93,61 @@ public class GameScreen extends JPanel{
 			System.out.println("ERROR Number of players is not 1 or 2.");
 			System.exit(0);
 		}
-		mouseListener = new Listener(this.players, this);
 		drawScreen();
+		
+		
+		if(listener!= null){
+			removeMouseListener(listener);
+		}
+		listener = new MouseAdapter() { 
+	          public void mouseClicked(MouseEvent e) { 
+	        	int x =e.getX();
+	      		int col =-1;
+	      		for(int i=0;i<7;i++){
+	      			int start =columnStart[i];
+	      			if(x>=start && x<=start+circleWidth){
+	      				col = i;
+	      				System.out.println("Picked col ="+col);
+	      			}
+	      		}
+	      		char ans =players[currPlayerIndex].makeMove(new Coordinate(0,col));
+	      		System.out.println("makemove returned: "+ ans);
+	      		if(ans == 't'){
+	      			gameOver("Tie Game!");
+	      			return;
+	      		}
+	      		else if(ans == 'w'){
+	      			gameOver("Player "+(currPlayerIndex+1) +" wins!");
+	      			return;
+	      		}
+	      		else if(ans =='n'){
+	      			//if it is a computer
+	      			if(playerAmount==1){
+	      				//computer goes
+	      				ans = players[1].makeMove(null);
+	      				if(ans == 't'){
+	      					gameOver("Tie Game!");
+	      					return;
+	      				}
+	      				else if(ans == 'w'){
+	      					gameOver("You Lose!");
+	      					return;
+	      				}
+	      				repaint();
+	      			}
+	      			else{
+	      				//if its human then let other player go
+	      				currPlayerIndex++;
+	      				if(currPlayerIndex==2){
+	      					currPlayerIndex = 0;
+	      				}
+	      				repaint();
+	      			}
+	      		} 
+	          }
+		};
+		
+		addMouseListener(listener); 
 	}
 	
 	/**
@@ -92,8 +155,8 @@ public class GameScreen extends JPanel{
 	 */
 	private void drawScreen() {
 		removeAll();
-		drawButtons();
 		repaint();
+		drawButtons();
 		revalidate();
 	}
 	
@@ -169,6 +232,7 @@ public class GameScreen extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 				players[0].playAgain();
 				players[1].playAgain();
+				drawScreen();
 			}
 		});
 		popup.add(pa);
@@ -191,15 +255,15 @@ public class GameScreen extends JPanel{
 		int w =ScreenConfiguration.width;
 		int h = ScreenConfiguration.height;	
 		int circleWidth = w/9;
-		int circleHeight= (int) Math.round(h*7/(8*10.25));
+		int circleHeight= (int) Math.round(h*7/(8*7.75));
 		int spaceWidth = circleWidth/4;
 		int spaceHeight = circleHeight/4;
-		int[] columns = new int[7];
 		
 		//Draw the yellow box
 		g.setColor(Color.yellow);
 		g.fillRect(0, h/16, w, h*7/8);
 		
+		printBoard();
 		for(int row = board.length-1; row>=0; row--){
 			for(int col = 0; col<board[row].length; col++){
 				if(board[row][col]=='R'){
@@ -211,12 +275,12 @@ public class GameScreen extends JPanel{
 				else{
 					g.setColor(Color.white);
 				}
-				columns[col]= col*(circleWidth+spaceWidth)+spaceWidth;
-				g.fillOval(col*(circleWidth+spaceWidth)+spaceWidth , (5-row)*h*(circleHeight+spaceHeight) +spaceHeight, circleWidth, circleHeight);
-				
+				this.columnStart[col]= col*(circleWidth+spaceWidth)+spaceWidth;
+				int heightStart = (5-row)*(circleHeight+spaceHeight) +spaceHeight+h/16;
+				g.fillOval(columnStart[col] , heightStart, circleWidth, circleHeight);
 			}
 		}
-		mouseListener.updateColumns(columns, circleWidth);
+		this.circleWidth = circleWidth;
 		
 		//Draw Curr Player Box
 		JTextField currP = new JTextField("Player "+(currPlayerIndex+1)+"'s Turn");
@@ -244,12 +308,16 @@ public class GameScreen extends JPanel{
 		p2.setHorizontalAlignment(SwingConstants.CENTER);
 		p2.setBounds(w*7/8, h*15/16, w/8, h/16);
 		add(p2);
-		
-		
-		
-		
 	}
 	
+	public void printBoard(){
+		for(int row=0; row<board.length; row++){
+			for(int col=0; col<board[row].length; col++){
+				System.out.print(board[row][col]+"  ");
+			}
+			System.out.println();
+		}
+	}
 	
 //END OF CLASS
 }

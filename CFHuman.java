@@ -55,10 +55,11 @@ public class CFHuman implements CFPlayer{
 		if(movesCnt>=3*7){
 			return 't';
 		}
-		boolean colNotValid = true;
-		while(colNotValid){
-			colNotValid = !checkValidRow(ans);
+		//bad move
+		if(!checkValidRow(ans)){
+			return 'b';
 		}
+		
 		
 		prevMoves[movesCnt]=ans;
 		movesCnt++;

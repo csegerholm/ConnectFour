@@ -27,7 +27,7 @@ public class CFApp {
 		startMenu = new StartMenu(this);
 		frame.setContentPane(startMenu);
 		frame.pack();
-		frame.setSize(new Dimension(ScreenConfiguration.width,ScreenConfiguration.height));
+		frame.setSize(new Dimension(ScreenConfiguration.actualWidth,ScreenConfiguration.actualHeight));
 	}
 	
 	/**
