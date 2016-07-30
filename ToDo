@@ -1,6 +1,6 @@
 Things to do:
-	-fix format
-	-Have computer stop it when two in middle
+	-Dynamic drawing when window is resized (and font?)
+	-Have the computer not go to positions that will lead other player to win
 		
 		
 BOARD:

@@ -52,7 +52,7 @@ public class CFHuman implements CFPlayer{
 	
 	public char makeMove(Coordinate ans) {
 		//tie
-		if(movesCnt>=3*7){
+		if(color=='R'&&movesCnt>=3*7-1){
 			return 't';
 		}
 		//bad move

@@ -11,9 +11,18 @@ public class CFAI implements CFPlayer{
 	private char[][] board;
 	private Coordinate[] prevMoves;
 	private int movesCnt;
+	
+	/**
+	 * Gives row coordinate for corresponding column. -1 means column is full. 
+	 * any other -# means if you go here the other player can win 
+	 */
 	private int[] possibleRow = new int[7];
 	
-	
+	/**
+	 * Computer player
+	 * @param color -> char of color this player is assigned (B or R)
+	 * @param board -> char[6][7] of the board game is played on
+	 */
 	public CFAI(char color, char[][] board){
 		this.color=color;
 		this.prevMoves = new Coordinate[3*7];
@@ -21,11 +30,102 @@ public class CFAI implements CFPlayer{
 		this.board=board;
 	}
 
+	public char getColor() {
+		return color;
+	}
+	
+	public void undoMove() {
+		//If no moves were made don't do anything
+		if(movesCnt==0){
+			return;
+		}	
+		movesCnt--;
+		Coordinate last = prevMoves[movesCnt];
+		board[last.row][last.col]='O';
+	}
+
+	public void playAgain() {
+		this.movesCnt=0;
+		for(int i=0; i<board.length;i++){
+			for(int j=0; j<board[i].length; j++){
+				board[i][j] = 'O';
+			}
+		}
+	}
+	
+	public char makeMove(Coordinate move) {
+		//tie
+		if(movesCnt>=(3*7-1)){
+			return 't';
+		}
+		//Find all possible moves
+		findPossibleMoves();
+		move = new Coordinate(-1,-1);
+		char ans = 'n';
+		
+		//check if you can win
+		move.col = canWin(color);
+		if(move.col!=-1){
+			ans = 'w';
+		}
+		else{
+			//check if other person can win
+			if(color=='B'){
+				move.col = canWin('R');
+			}
+			else{
+				move.col = canWin('B');
+			}
+			//if they can't win
+			if(move.col==-1){
+				//X out all of the col I can't go bc they would win
+				move.col = markBadCol();
+				//if I still have col to choose from
+				if(move.col==-1){
+					//check for two at the bottom
+					move.col = twoBott();
+					if(move.col==-1){
+						//go middle
+						if(possibleRow[3]!=-1){
+							move.col=3;
+						}
+						else{
+							//go for three in a row
+							move.col = three();
+							if(move.col==-1){
+								//go for two in a row
+								move.col = two();
+								//other wise just go anywhere
+								if(move.col==-1){
+									int ij=0;
+									while(ij<7){
+										if(possibleRow[ij]!=-1){
+											move.col=ij;
+											break;
+										}
+										ij++;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	
+		move.row = possibleRow[move.col];
+		prevMoves[movesCnt]=move;
+		movesCnt++;
+		board[move.row][move.col]=color;
+		return ans;
+	}
+
+	
 	//helper
 	/**
 	 * Fills in possibleRow moves. If column is full then fills in -1
 	 */
-	private void checkCol(){ 
+	private void findPossibleMoves(){ 
 		for(int x=0; x<7; x++){
 			possibleRow[x]=-1;
 			for(int y=0; y<6;y++){
@@ -36,12 +136,13 @@ public class CFAI implements CFPlayer{
 			}
 		}
 	}
+
 	/**
-	 * Lets you know if opp has two in a row at the bottom
+	 * Lets you know if opponent has two in a row at the bottom
 	 * @return
 	 */
 	private int twoBott(){
-		if(board[0][3]=='R' && (board[0][2]=='R' || board[0][4]=='R') ){
+		if(board[0][3]=='B' && (board[0][2]=='B' || board[0][4]=='B') ){
 			if(board[0][2]=='O')
 				return 2;
 			if(board[0][4]=='O')
@@ -57,7 +158,7 @@ public class CFAI implements CFPlayer{
 				right=0;
 				dr=0;
 				dl=0;
-				if(possibleRow[x]==-1){
+				if(possibleRow[x]<0){
 					continue;
 				}
 				y=possibleRow[x];
@@ -139,7 +240,7 @@ public class CFAI implements CFPlayer{
 				right=0;
 				dr=0;
 				dl=0;
-				if(possibleRow[x]==-1){
+				if(possibleRow[x]<0){
 					continue;
 				}
 				y=possibleRow[x];
@@ -213,118 +314,38 @@ public class CFAI implements CFPlayer{
 			}
 		return -1;
 	}
-	
-	public char getColor() {
-		return color;
-	}
-	
-	public void undoMove() {
-		if(movesCnt==0){
-			return;
-		}
-		
-		movesCnt--;
-		Coordinate last = prevMoves[movesCnt];
-		board[last.row][last.col]='O';
-	}
 
-	
-	public boolean didWin() {
-		Coordinate last = prevMoves[movesCnt-1];
-		return winOneMove(last, color);
-	}
-	
 	/**
-	 * Plays the next move
-	 * @return n = nothing = good to go, t=tie, w=win
+	 * returns column number to win or block a win -1 if can't
+	 * @param color
+	 * @return column number to win
 	 */
-	public char makeMove(Coordinate move) {
-		//tie
-		if(movesCnt>=3*7){
-			return 't';
-		}
-		checkCol();
-		Coordinate ans = new Coordinate(-1,-1);
-		//check if you can win
-		ans.col = canWin('B');
-		if(ans.col!=-1){
-			ans.row = possibleRow[ans.col];
-		}
-		else{
-			//check if they can win
-			ans.col = canWin('R');
-			if(ans.col!=-1){
-				ans.row = possibleRow[ans.col];
-			}
-			else{
-				//check double bottom
-				ans.col = twoBott();
-				if(ans.col!=-1){
-					ans.row = possibleRow[ans.col];
-				}
-				else{
-					//go middle
-					if(possibleRow[3]!=-1){
-						ans.col=3;
-						ans.row=possibleRow[3];
-					}
-					else{
-						//go three
-						ans.col = three();
-						if(ans.col!=-1){
-							ans.row = possibleRow[ans.col];
-						}
-						else{
-							ans.col = two();
-							if(ans.col!=-1){
-								ans.row = possibleRow[ans.col];
-							}
-							else{
-								int ij=0;
-								while(ij<7){
-									if(possibleRow[ij]!=-1){
-										ans.col=ij;
-										ans.row = possibleRow[ans.col];
-										break;
-									}
-									ij++;
-								}
-							}
-						}
-					}	
-				}
-			}
-		}
-		prevMoves[movesCnt]=ans;
-		movesCnt++;
-		board[ans.row][ans.col]=color;
-		
-		if(didWin()){
-			//win
-			return 'w';
-		}
-		//nothing- continue playing
-		return 'n';
-	}
-
-	private int canWin(char color){ // returns col number to win or block a win -1 if cant
+	private int canWin(char color){ 
 		Coordinate last = new Coordinate(-1,-1);
 		for(int x=0; x<7; x++){
-			if(possibleRow[x]==-1){
+			//if column is full skip it
+			if(possibleRow[x]<0){
 				continue;
 			}
-			board[possibleRow[x]][x]=color;
 			last.col =x;
 			last.row = possibleRow[x];
+			board[last.row][last.col]=color;
+			//if you can win go here
 			if( winOneMove(last, color) ){
-				return x;
+				return last.col;
 			}
-			board[possibleRow[x]][x]='O';
+			board[last.row][last.col]='O';
 		}
 		return -1;
 		
 	}
 
+	/**
+	 * Returns true if this color can win in one move by making move last
+	 * @param last -> coordinate of move to be made
+	 * @param color -> char of color (R or B)
+	 * @return
+	 */
 	private boolean winOneMove(Coordinate last, char color){
 		int lr=0;
 		int ud=0;
@@ -418,18 +439,40 @@ public class CFAI implements CFPlayer{
 		return false;
 	}
 
-	/**
-	 * Wipes the board and prevMoves clean
-	 */
-	public void playAgain() {
-		this.movesCnt=0;
-		
-		for(int i=0; i<board.length;i++){
-			for(int j=0; j<board[i].length; j++){
-				board[i][j] = 'O';
+	
+	private int markBadCol(){
+		int avaiableCol = 7;
+		//for each column
+		for(int col=0; col<possibleRow.length; col++){
+			int openRow = possibleRow[col];
+			//if row is full or has only one left skip analysis
+			if(openRow==-1){
+				avaiableCol--;
+				continue;
+			}
+			if(openRow==5){
+				continue;
+			}
+			//if you go here
+			board[openRow][col]= color;
+			//check if other player can win if I went there
+			if(canWin('B')!=-1){
+				possibleRow[col]=possibleRow[col]-105;
+				avaiableCol--;
+			}
+			board[openRow][col]= 'O';
+		}
+		if(avaiableCol<1){
+			for(int col=0; col<possibleRow.length; col++){
+				int openRow = possibleRow[col];
+				//if all moves cause a loss then just choose first open col
+				if(openRow!=-1){
+					possibleRow[col]= openRow+105;
+					return col;
+				}
 			}
 		}
 		
+		return -1;
 	}
-	
 }

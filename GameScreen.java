@@ -1,6 +1,7 @@
 package ImprovedVersion;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -62,8 +63,8 @@ public class GameScreen extends JPanel{
 		startMenu = sm;
 		board = new char[6][7];
 		players = new CFPlayer[2];
-		//Set color to purple
-		setBackground(Color.magenta);
+		//Set color to blue
+		setBackground(Color.blue);
 		//Array layout where you pick coordinates of each component
 		setLayout(null);
 		this.columnStart = new int[7];
@@ -117,6 +118,7 @@ public class GameScreen extends JPanel{
 	      			return;
 	      		}
 	      		else if(ans == 'w'){
+	      			repaint();
 	      			gameOver("Player "+(currPlayerIndex+1) +" wins!");
 	      			return;
 	      		}
@@ -130,6 +132,7 @@ public class GameScreen extends JPanel{
 	      					return;
 	      				}
 	      				else if(ans == 'w'){
+	      					repaint();
 	      					gameOver("You Lose!");
 	      					return;
 	      				}
@@ -146,7 +149,6 @@ public class GameScreen extends JPanel{
 	      		} 
 	          }
 		};
-		
 		addMouseListener(listener); 
 	}
 	
@@ -169,6 +171,9 @@ public class GameScreen extends JPanel{
 		
 		//MAKE QUIT BUTTON
 		JButton quit = new JButton("Quit");
+		quit.setBackground(Color.white);
+		quit.setForeground(Color.red);
+		quit.setFont(new Font("Tahoma", Font.BOLD, 16));
 		quit.setBounds(w*7/8, 0, w/8, h/16);
 		quit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -179,6 +184,9 @@ public class GameScreen extends JPanel{
 		add(quit);
 		//MAKE UNDO BUTTON
 		JButton undo = new JButton("Undo");
+		undo.setBackground(Color.white);
+		undo.setForeground(Color.orange);
+		undo.setFont(new Font("Tahoma", Font.BOLD, 16));
 		undo.setBounds(0, 0, w/8, h/16);
 		undo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -220,14 +228,26 @@ public class GameScreen extends JPanel{
 		int popw = (3*w)/4;
 		int poph = h/2;
 		//draw pop up
-		JTextField popup = new JTextField(message);
+		JTextField popup = new JTextField(" ");
 		popup.setEditable(false);
-		popup.setBackground(Color.gray);
+		popup.setBackground(Color.orange);
 		popup.setBounds(w/8, h/4, popw, poph);
 		add(popup);
+		//Add popup words
+		JTextField popupWords = new JTextField(message);
+		popupWords.setEditable(false);
+		popupWords.setBackground(Color.white);
+		popupWords.setForeground(Color.black);
+		popupWords.setHorizontalAlignment(SwingConstants.CENTER);
+		popupWords.setFont(new Font("Tahoma", Font.BOLD, 32));
+		popupWords.setBounds(popw/7, poph/5, 5*popw/7, poph/4);
+		popup.add(popupWords);
 		//draw 2 buttons - play again or main menu
 		JButton pa = new JButton("Play Again");
-		pa.setBounds(popw/4, poph/2, popw/4, poph/4);
+		pa.setFont(new Font("Tahoma", Font.BOLD, 20));
+		pa.setBackground(Color.green);
+		pa.setForeground(Color.white);
+		pa.setBounds(popw/7, poph/2, 2*popw/7, poph/4);
 		pa.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				players[0].playAgain();
@@ -238,7 +258,10 @@ public class GameScreen extends JPanel{
 		popup.add(pa);
 		
 		JButton quit = new JButton("Quit");
-		quit.setBounds(3*popw/4, poph/2, popw/4, poph/4);
+		quit.setBackground(Color.red);
+		quit.setForeground(Color.white);
+		quit.setFont(new Font("Tahoma", Font.BOLD, 20));
+		quit.setBounds(4*popw/7, poph/2, 2*popw/7, poph/4);
 		quit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//switch to level screen
@@ -263,7 +286,6 @@ public class GameScreen extends JPanel{
 		g.setColor(Color.yellow);
 		g.fillRect(0, h/16, w, h*7/8);
 		
-		printBoard();
 		for(int row = board.length-1; row>=0; row--){
 			for(int col = 0; col<board[row].length; col++){
 				if(board[row][col]=='R'){
@@ -284,8 +306,14 @@ public class GameScreen extends JPanel{
 		
 		//Draw Curr Player Box
 		JTextField currP = new JTextField("Player "+(currPlayerIndex+1)+"'s Turn");
+		currP.setFont(new Font("Tahoma", Font.BOLD, 14));
+		currP.setBackground(Color.white);
+		currP.setForeground(Color.black);
+		if(currPlayerIndex==1){
+			currP.setForeground(Color.red);
+		}
 		currP.setEditable(false);
-		//cfText.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		currP.setFont(new Font("Tahoma", Font.BOLD, 24));
 		currP.setHorizontalAlignment(SwingConstants.CENTER);
 		currP.setBounds(w*3/8, 0, w/4, h/16);
 		add(currP);
@@ -295,7 +323,7 @@ public class GameScreen extends JPanel{
 		p1.setEditable(false);
 		p1.setBackground(Color.black);
 		p1.setForeground(Color.white);
-		//cfText.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		p1.setFont(new Font("Tahoma", Font.BOLD, 14));
 		p1.setHorizontalAlignment(SwingConstants.CENTER);
 		p1.setBounds(0, h*15/16, w/8, h/16);
 		add(p1);
@@ -304,7 +332,7 @@ public class GameScreen extends JPanel{
 		p2.setEditable(false);
 		p2.setBackground(Color.red);
 		p2.setForeground(Color.white);
-		//cfText.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		p2.setFont(new Font("Tahoma", Font.BOLD, 14));
 		p2.setHorizontalAlignment(SwingConstants.CENTER);
 		p2.setBounds(w*7/8, h*15/16, w/8, h/16);
 		add(p2);
