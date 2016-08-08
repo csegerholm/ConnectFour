@@ -1,4 +1,4 @@
-package ImprovedVersion;
+package JavaApp;
 
 public class ScreenConfiguration {
 	public static int actualWidth = 900;

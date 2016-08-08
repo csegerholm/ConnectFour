@@ -1,4 +1,4 @@
-package ImprovedVersion;
+package JavaApp;
 
 /**
  * Player object for computer player. 
@@ -70,12 +70,7 @@ public class CFAI implements CFPlayer{
 		}
 		else{
 			//check if other person can win
-			if(color=='B'){
-				move.col = canWin('R');
-			}
-			else{
-				move.col = canWin('B');
-			}
+			move.col = canWin('B');
 			//if they can't win
 			if(move.col==-1){
 				//X out all of the col I can't go bc they would win
@@ -85,8 +80,10 @@ public class CFAI implements CFPlayer{
 					//check for two at the bottom
 					move.col = twoBott();
 					if(move.col==-1){
+						//Get rid of moves where I could let them block me
+						markNotBestCol();
 						//go middle
-						if(possibleRow[3]!=-1){
+						if(possibleRow[3]>-1){
 							move.col=3;
 						}
 						else{
@@ -99,7 +96,7 @@ public class CFAI implements CFPlayer{
 								if(move.col==-1){
 									int ij=0;
 									while(ij<7){
-										if(possibleRow[ij]!=-1){
+										if(possibleRow[ij]>-1){
 											move.col=ij;
 											break;
 										}
@@ -120,6 +117,10 @@ public class CFAI implements CFPlayer{
 		return ans;
 	}
 
+	
+	public int getNumberOfMoves(){
+		return movesCnt;
+	}
 	
 	//helper
 	/**
@@ -316,7 +317,7 @@ public class CFAI implements CFPlayer{
 	}
 
 	/**
-	 * returns column number to win or block a win -1 if can't
+	 * returns column number to win in one move -1 if can't
 	 * @param color
 	 * @return column number to win
 	 */
@@ -332,6 +333,8 @@ public class CFAI implements CFPlayer{
 			board[last.row][last.col]=color;
 			//if you can win go here
 			if( winOneMove(last, color) ){
+				System.out.println("Blocking a win on col:"+ last.row);
+				board[last.row][last.col]='O';
 				return last.col;
 			}
 			board[last.row][last.col]='O';
@@ -439,7 +442,10 @@ public class CFAI implements CFPlayer{
 		return false;
 	}
 
-	
+	/**
+	 * Marks all the columns where if AI goes could allow other player to win
+	 * @return -1 if there is still columns to choose from after marking or returns col number if all col are bad
+	 */
 	private int markBadCol(){
 		int avaiableCol = 7;
 		//for each column
@@ -455,11 +461,14 @@ public class CFAI implements CFPlayer{
 			}
 			//if you go here
 			board[openRow][col]= color;
+			possibleRow[col]++;
 			//check if other player can win if I went there
 			if(canWin('B')!=-1){
+				//mark col as bad
 				possibleRow[col]=possibleRow[col]-105;
 				avaiableCol--;
 			}
+			possibleRow[col]--;
 			board[openRow][col]= 'O';
 		}
 		if(avaiableCol<1){
@@ -475,4 +484,38 @@ public class CFAI implements CFPlayer{
 		
 		return -1;
 	}
+	
+	/**
+	 * Marks cols where the space above the current play would allow AI to win.
+	 * If marking these cols means that no col are left to play on then it does not mark them
+	 */
+	private void markNotBestCol(){
+		int avaiableCol = 7;
+		int[] newPossibleRow = new int[7];
+		//for each column
+		for(int col=0; col<possibleRow.length; col++){
+			int openRow = possibleRow[col];
+			newPossibleRow[col]= openRow;
+			//if row is full or marked as bad or has only one left skip analysis
+			if(openRow<0){
+				avaiableCol--;
+				continue;
+			}
+			if(openRow==5){
+				continue;
+			}
+			//check if I can win if I went in space above
+			if(winOneMove(new Coordinate(openRow+1,col),color)){
+				//mark col as not best
+				newPossibleRow[col]=possibleRow[col]-205;
+				avaiableCol--;
+			}
+		}
+		//if we did not mark off every col then show the new marks
+		if(avaiableCol>=1){
+			possibleRow = newPossibleRow;
+		}
+		//otherwise leave the possible Rows
+	}
+	
 }

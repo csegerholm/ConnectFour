@@ -1,4 +1,4 @@
-package ImprovedVersion;
+package JavaApp;
 
 public class Coordinate {
 	public int row;

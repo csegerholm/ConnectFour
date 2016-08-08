@@ -1,4 +1,4 @@
-package ImprovedVersion;
+package JavaApp;
 public interface CFPlayer{
 	
 	/**
@@ -23,6 +23,12 @@ public interface CFPlayer{
 	 * Restarts player's boards and list of last moves
 	 */
 	public void playAgain();
+	
+	/**
+	 * Gets number of moves this player made
+	 * @return number of moves
+	 */
+	public int getNumberOfMoves(); 
 	
 	
 }

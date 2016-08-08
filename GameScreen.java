@@ -1,4 +1,4 @@
-package ImprovedVersion;
+package JavaApp;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -54,6 +54,11 @@ public class GameScreen extends JPanel{
 	 */
 	int circleWidth;
 	
+	/**
+	 * True if the game is over 
+	 */
+	boolean isOver;
+	
 	MouseAdapter listener;
 	
 	/**
@@ -75,6 +80,7 @@ public class GameScreen extends JPanel{
 	 * @param players - number of human players
 	 */
 	public void startGame(int playerNum){
+		isOver = false;
 		currPlayerIndex=0;
 		playerAmount = playerNum;
 		for(int i=0;i<board.length;i++){
@@ -102,17 +108,18 @@ public class GameScreen extends JPanel{
 		}
 		listener = new MouseAdapter() { 
 	          public void mouseClicked(MouseEvent e) { 
+	        	  if(isOver){
+		        		return;
+		        	}
 	        	int x =e.getX();
 	      		int col =-1;
 	      		for(int i=0;i<7;i++){
 	      			int start =columnStart[i];
 	      			if(x>=start && x<=start+circleWidth){
 	      				col = i;
-	      				System.out.println("Picked col ="+col);
 	      			}
 	      		}
 	      		char ans =players[currPlayerIndex].makeMove(new Coordinate(0,col));
-	      		System.out.println("makemove returned: "+ ans);
 	      		if(ans == 't'){
 	      			gameOver("Tie Game!");
 	      			return;
@@ -190,6 +197,12 @@ public class GameScreen extends JPanel{
 		undo.setBounds(0, 0, w/8, h/16);
 		undo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if(isOver){
+					isOver = false;
+					if(playerAmount ==1 && players[1].getNumberOfMoves() < players[0].getNumberOfMoves()){
+						players[0].undoMove();
+					}
+				}
 				//player undoes the computer's move and their own move
 				if(playerAmount ==1){
 					//undo ai move
@@ -223,6 +236,7 @@ public class GameScreen extends JPanel{
 	 * @param message
 	 */
 	public void gameOver(String message){
+		printBoard();
 		int w =ScreenConfiguration.width;
 		int h = ScreenConfiguration.height;
 		int popw = (3*w)/4;
@@ -269,6 +283,20 @@ public class GameScreen extends JPanel{
 			}
 		});
 		popup.add(quit);
+		
+		JButton close = new JButton("Close");
+		close.setBackground(Color.white);
+		close.setForeground(Color.red);
+		close.setFont(new Font("Tahoma", Font.BOLD, 18));
+		close.setBounds(6*popw/7, 0, popw/7, poph/6);
+		close.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {				
+				isOver = true;
+				remove(popup);
+				repaint();
+			}
+		});
+		popup.add(close);
 		
 		
 	}

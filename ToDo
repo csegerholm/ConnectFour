@@ -1,6 +1,8 @@
 Things to do:
 	-Dynamic drawing when window is resized (and font?)
-	-Have the computer not go to positions that will lead other player to win
+	-AI doesn't recognize down and left for 4 in a row block
+	-Don't go in a space that could lead to other getting 3 in a row
+	-How to block double moves
 		
 		
 BOARD:

@@ -1,4 +1,4 @@
-package ImprovedVersion;
+package JavaApp;
 //NOT DONE
 
 /**
@@ -48,6 +48,10 @@ public class CFHuman implements CFPlayer{
 
 	public char getColor() {
 		return color;
+	}
+	
+	public int getNumberOfMoves(){
+		return movesCnt;
 	}
 	
 	public char makeMove(Coordinate ans) {

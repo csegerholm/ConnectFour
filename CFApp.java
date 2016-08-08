@@ -1,4 +1,4 @@
-package ImprovedVersion;
+package JavaApp;
 
 import java.awt.Dimension;
 import javax.swing.JFrame;
