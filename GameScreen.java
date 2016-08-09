@@ -127,6 +127,12 @@ public class GameScreen extends JPanel{
 	      		else if(ans == 'w'){
 	      			repaint();
 	      			gameOver("Player "+(currPlayerIndex+1) +" wins!");
+	      			if(playerAmount==2){
+		      			currPlayerIndex++;
+	      				if(currPlayerIndex==2){
+	      					currPlayerIndex = 0;
+	      				}
+	      			}
 	      			return;
 	      		}
 	      		else if(ans =='n'){

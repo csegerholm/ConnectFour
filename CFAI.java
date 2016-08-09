@@ -87,20 +87,27 @@ public class CFAI implements CFPlayer{
 							move.col=3;
 						}
 						else{
-							//go for three in a row
-							move.col = three();
+							//block a three in a row
+							move.col = three('B');
 							if(move.col==-1){
-								//go for two in a row
-								move.col = two();
-								//other wise just go anywhere
+								//go for three in a row
+								move.col = three(color);
 								if(move.col==-1){
-									int ij=0;
-									while(ij<7){
-										if(possibleRow[ij]>-1){
-											move.col=ij;
-											break;
+									move.col = two('B');
+									if(move.col==-1){
+										//go for two in a row
+										move.col = two(color);
+										//other wise just go anywhere
+										if(move.col==-1){
+											int ij=0;
+											while(ij<7){
+												if(possibleRow[ij]>-1){
+													move.col=ij;
+													break;
+												}
+												ij++;
+											}
 										}
-										ij++;
 									}
 								}
 							}
@@ -152,7 +159,7 @@ public class CFAI implements CFPlayer{
 		return -1;
 	}
 	
-	private int three(){
+	private int three(char color){
 		int down, right, dr, dl, y;
 		for(int x=0;x<7;x++){ 
 				down=0;
@@ -234,7 +241,7 @@ public class CFAI implements CFPlayer{
 		return -1;
 	}
 	
-	private int two(){
+	private int two( char color){
 		int down, right, dr, dl, y;
 		for(int x=0;x<7;x++){ 
 				down=0;
