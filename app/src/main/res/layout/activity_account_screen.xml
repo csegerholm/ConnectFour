@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:background="@android:color/holo_blue_dark"
+    android:layout_height="match_parent"
+    tools:context="cms549.connectfour.AccountScreen">
+
+    <TextView
+        android:text="UserName"
+        android:background="@android:color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvname"
+        android:textAlignment="center"
+        android:fontFamily="sans-serif"
+        android:textSize="40sp"
+        android:layout_alignParentTop="true"
+        android:textColor="@android:color/black"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+            android:layout_height="50dp"
+           android:text="10"
+            android:id="@+id/scoretv"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            android:textStyle="normal|bold"
+            android:layout_alignBaseline="@+id/textView5"
+            android:layout_alignBottom="@+id/textView5"
+            android:layout_alignParentEnd="true"
+            android:layout_width="50dp" />
+
+        <TextView
+            android:text="Games"
+           android:layout_width="100dp"
+            android:layout_height="50dp"
+    android:textSize="25dp"
+            android:textColor="@android:color/black"
+            android:id="@+id/textView3"
+            android:layout_alignBaseline="@+id/gamestv"
+            android:layout_alignBottom="@+id/gamestv"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:text="10"
+    android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            android:id="@+id/gamestv"
+            android:textStyle="normal|bold"
+            android:layout_below="@+id/scoretv"
+            android:layout_alignParentEnd="true" />
+
+        <TextView
+            android:layout_width="100dp"
+            android:text="Score"
+            android:id="@+id/textView5"
+            android:textSize="25dp"
+            android:textColor="@android:color/black"
+            android:layout_height="50dp"
+            android:layout_marginTop="13dp"
+            android:layout_below="@+id/tvname"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:text="Wins/Ties/Losses"
+            android:layout_height="50dp"
+            android:layout_below="@+id/gamestv"
+            android:layout_alignParentStart="true"
+            android:textColor="@android:color/black"
+            android:textSize="25dp"
+            android:id="@+id/textView6"
+            android:layout_width="250dp" />
+
+        <TextView
+            android:text="5/0/5"
+            android:layout_height="50dp"
+            android:layout_below="@+id/gamestv"
+            android:layout_alignParentEnd="true"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            android:id="@+id/winstv"
+            android:textStyle="normal|bold"
+            android:layout_width="95dp" />
+
+        <TextView
+            android:text="1.0"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_below="@+id/winstv"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            android:textStyle="normal|bold"
+            android:id="@+id/wltv"
+            android:layout_alignStart="@+id/gamestv" />
+
+        <TextView
+            android:text="Winning Ratio"
+            android:layout_height="50dp"
+            android:textColor="@android:color/black"
+            android:textSize="25dp"
+            android:id="@+id/textView11"
+            android:layout_below="@+id/textView6"
+            android:layout_alignParentStart="true"
+            android:layout_width="200dp" />
+
+        <TextView
+            android:text="Streak"
+           android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:textColor="@android:color/black"
+            android:textSize="25dp"
+            android:id="@+id/textView13"
+            android:layout_below="@+id/textView11"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:text="10"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            android:textStyle="normal|bold"
+            android:id="@+id/streaktv"
+            android:layout_below="@+id/wltv"
+            android:layout_alignParentEnd="true" />
+
+
+
+    <Button
+        android:text="Back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="goBack"
+        android:padding="10dp"
+        android:background="@android:color/black"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:textColor="@android:color/white" />
+
+    <Button
+        android:text="Achievements"
+        android:layout_width="wrap_content"
+        android:padding="10dp"
+        android:layout_height="wrap_content"
+        android:onClick="goToAchievements"
+        android:background="@android:color/holo_orange_light"
+        android:layout_alignParentBottom="true"
+        android:textColor="@android:color/white" />
+
+</RelativeLayout>

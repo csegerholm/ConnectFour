@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:background="@android:color/holo_blue_dark"
+    android:layout_height="match_parent"
+    tools:context="cms549.connectfour.ChooseChipScreen">
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/spchip1"
+        android:layout_above="@+id/textView8"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="56dp" />
+
+    <TextView
+        android:text="Player 2, Choose Your Chip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="25dp"
+        android:id="@+id/textView8"
+        android:layout_centerVertical="true"
+        android:layout_alignParentStart="true"
+        android:textColor="@android:color/white" />
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/spchip2"
+        android:layout_above="@+id/bplay"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="83dp" />
+
+    <Button
+        android:text="Play"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="clickPlay"
+        android:background="@android:color/holo_green_dark"
+        android:id="@+id/bplay"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:textColor="@android:color/background_light" />
+
+    <Button
+        android:text="Back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ccback"
+        android:onClick="backToMain"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:background="@android:color/holo_red_dark"
+        android:textColor="@android:color/white" />
+
+    <TextView
+        android:text="Player 1, Choose Your Chip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView9"
+        android:textSize="25dp"
+        android:textColor="@android:color/white"
+        android:layout_below="@+id/ccback"
+        android:layout_alignParentStart="true" />
+
+</RelativeLayout>

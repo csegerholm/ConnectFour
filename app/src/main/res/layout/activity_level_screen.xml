@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@android:color/holo_blue_dark"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:text="Easy"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/beasy"
+        android:onClick="clickEasy"
+        android:layout_marginBottom="76dp"
+        android:background="@android:color/holo_orange_light"
+        android:layout_above="@+id/bhard"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:text="Hard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/bhard"
+        android:onClick="clickHard"
+        android:background="@android:color/holo_orange_light"
+        android:layout_centerVertical="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:text="Back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/bback"
+        android:onClick="goBack"
+        android:background="@android:color/holo_red_dark"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:text="Choose Difficulty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="40sp"
+        android:textAlignment="center"
+
+        android:id="@+id/textView"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="35dp" />
+
+    <TextView
+        android:text="Choose Your Chip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvchoosechip"
+        android:textSize="25dp"
+        android:layout_marginTop="56dp"
+        android:textColor="@android:color/white"
+        android:layout_below="@+id/bhard"
+        android:layout_alignParentStart="true" />
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/spchip"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/tvchoosechip"
+        android:layout_alignParentStart="true" />
+</RelativeLayout>
